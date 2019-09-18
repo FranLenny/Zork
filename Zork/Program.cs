@@ -6,12 +6,6 @@ namespace Zork
     {
         static void Main(string[] args)
         {
-            string[] Room = new string[5];
-            Room[0] = "Forest";
-            Room[1] = "West of House";
-            Room[2] = "Behind House";
-            Room[3] = "Clearing";
-            Room[4] = "Canyon View";
 
             Console.WriteLine("Welcome to Zork!");
 
@@ -29,7 +23,7 @@ namespace Zork
                         break;
 
                     case Commands.LOOK:
-                        outputString = "This is an open field west of white house, with a boarded front door. \nA rubber mat saying 'Welcome to Zork!' lies by the door..";
+                        outputString = "This is an open field west of a white house, with a boarded front door. \nA rubber mat saying 'Welcome to Zork!' lies by the door..";
                         break;
 
                     case Commands.NORTH:
@@ -48,6 +42,9 @@ namespace Zork
             }
         }
 
+        private static readonly string[] Rooms = { "Forest", "West of House", "Behind House", "Clearing", "Canyon View" };
+
+        
         private static Commands ToCommand(string commandString) => Enum.TryParse(commandString, true, out Commands result) ? result : Commands.UNKNOWN;
     }
 }
