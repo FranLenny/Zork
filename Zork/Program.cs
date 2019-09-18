@@ -6,6 +6,13 @@ namespace Zork
     {
         static void Main(string[] args)
         {
+            string[] Room = new string[5];
+            Room[0] = "Forest";
+            Room[1] = "West of House";
+            Room[2] = "Behind House";
+            Room[3] = "Clearing";
+            Room[4] = "Canyon View";
+
             Console.WriteLine("Welcome to Zork!");
 
             Commands command = Commands.UNKNOWN;
