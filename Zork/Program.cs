@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Zork
 {
@@ -104,14 +105,8 @@ namespace Zork
 
         private static bool IsDirection(Commands command) => Directions.Contains(command);
 
-        private static readonly Room[,] Rooms =
-        {
-            { new Room("Rocky Trail"), new Room("South of House"), new Room("Canyon View") },
-            { new Room("Forest"), new Room("West of House"), new Room("Behind House") },
-            { new Room("Dense Woods"), new Room("North of House"), new Room("Clearing") }
-        };
-
-        private static readonly Dictionary<string, Room> RoomMap;
+        private static void InitializeRooms(string roomsFilename) =>
+            Rooms = JsonConvert.DeserializeObject<Room[,]>(File.ReadAllText(roomsFilename));
         
         static Program()
         {
@@ -133,27 +128,12 @@ namespace Zork
             RoomsFilename = 0
         }
 
-        private static void InitializeRoomDescriptions(string roomsFilename)
+        private static void InitializeRoom(string roomsFilename)
         {
-            const string fieldDelimiter = "##";
-            const int expectedFieldCount = 2;
-            const string defaultRoomsFilename = "Rooms.txt";
-            string roomsFilename = (args.Length > 0 ? args[(int)CommandLineArguments.RoomsFilename] : defaultRoomsFilename);
-
-
-            string[] lines = File.ReadAllLines(roomsFilename);
-            foreach (string line in lines)
+            var rooms = JsonConvert.DeserializeObject<Room[]>(File.ReadAllText(roomsFilename));
+            foreach (Room room in rooms)
             {
-                string[] fields = line.Split(fieldDelimiter);
-                if (fields.Length != expectedFieldCount)
-                {
-                    throw new InvalidDataException("Invalid record.");
-                }
-
-                string name = fields[(int)Fields.Name];
-                string description = fields[(int)Fields.Description];
-
-                RoomMap[name].Description = description;
+                RoomMap[room.Name].Description = room.Description;
             }
         }
 
