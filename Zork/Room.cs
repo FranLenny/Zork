@@ -7,7 +7,9 @@ namespace Zork
     public class Room
     {
         public override string ToString() => Name;
-        
+
+        public override int GetHashCode() => Name.GetHashCode();
+
         public string Name { get; }
 
         public string Description { get; set; }
