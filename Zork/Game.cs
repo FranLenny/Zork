@@ -1,8 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
+using System.Reflection;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
+using System.Text;
 
 
 namespace Zork
@@ -76,6 +79,29 @@ namespace Zork
             game.Player = game.World.SpawnPlayer();
 
             return game;
+        }
+
+        private void LoadCommands()
+        {
+            Type[] types = Assembly.GetExecutingAssembly().GetTypes();
+            foreach (Type type in types)
+            {
+                CommandClassAttribute commandClassAttribute = type.GetCustomAttributes<CommandClassAttribute>();
+                if (commandClassAttribute != null)
+                {
+                    MethodInfo[] methods = type.GetMethods();
+                    foreach (MethodInfo method in methods)
+                    {
+                        CommandAttribute commandAttribute = method.GetCustomAttribute<CommandAttribute>();
+                        if (commandAttribute != null)
+                        {
+                            Command command = new Command(commandAttribute.CommandName, commandAttribute.Verbs,
+                                Action<Game, CommandContext>)Delegate.CreateDelegate(typeof(Action<Game, CommandContext>), method));
+                            CommandManager.AddCommand(command);
+                        }
+                    }
+                }
+            }
         }
     }
 }
